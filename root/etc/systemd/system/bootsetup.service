@@ -11,7 +11,7 @@
 Description=Setup scripts to run on Boot
 Documentation=https://github.com/SloCompTech/deb-boot-setup
 After=boot.mount
-After=networking.service
+After=NetworkManager.service
 Requires=network.target
 
 [Service]
