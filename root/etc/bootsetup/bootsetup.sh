@@ -6,6 +6,7 @@
 
 export BOOTSETUP_BIN=/etc/bootsetup
 export BOOTSETUP_ROOT=/boot/bootsetup
+export BOOTSETUP_CONFIG=/boot/bootsetup/config
 
 # Check for lock file
 if [ -f "$BOOTSETUP_BIN/lock" ]; then

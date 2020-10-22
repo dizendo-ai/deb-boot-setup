@@ -39,6 +39,13 @@ systemctl status bootsetup
 	upgrade # Update & upgrade using apt
 ```
 
+## Permanent Config folder structure
+
+```
+/boot/bootsetup/config
+	wifi_country # Wifi country. Like: US, BR, etc. see: scripts/900-wificonnect.sh
+```
+
 ## Contributing
 
 ### Make additional settings
