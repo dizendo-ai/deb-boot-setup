@@ -37,16 +37,18 @@ else
 fi
 
 # Create app directory
-mkdir -p /home/pi/dizendo/apps/shellhub
+mkdir -p /opt/shellhub
 
 # Create app start script
-echo "bootsetup: Start creating shellhub start script"
-echo "/usr/bin/docker run -d --name=shellhub --restart=on-failure --privileged --net=host --pid=host -v /:/host -v /dev:/dev -v /var/run/docker.sock:/var/run/docker.sock -v /etc/passwd:/etc/passwd -v /etc/group:/etc/group -e SHELLHUB_SERVER_ADDRESS=$shellhub_server_address -e SHELLHUB_PRIVATE_KEY=/host/etc/shellhub.key -e SHELLHUB_TENANT_ID=$shellhub_tenant_id -e SHELLHUB_PREFERRED_HOSTNAME=$HOSTNAME shellhubio/agent:$shellhub_version" > /home/pi/dizendo/apps/shellhub/start.sh
-echo "/usr/bin/docker stop shellhub; sleep 2; /usr/bin/docker rm shellhub" > /home/pi/dizendo/apps/shellhub/stop.sh
-chmod ugo+x /home/pi/dizendo/apps/shellhub/start.sh
-chmod ugo+x /home/pi/dizendo/apps/shellhub/stop.sh
-chown pi:pi -R /home/pi/dizendo
-echo "bootsetup: End creating shellhub start script"
+echo "bootsetup: Start creating shellhub env file"
+cat > /opt/shellhub/.env <<EOF
+SHELLHUB_TENANT_ID=$shellhub_tenant_id
+SHELLHUB_SERVER_ADDRESS=$shellhub_server_address
+SHELLHUB_VERSION=$shellhub_version
+SHELLHUB_PREFERRED_HOSTNAME=$HOSTNAME
+SHELLHUB_PRIVATE_KEY=/host/etc/shellhub.key
+EOF
+echo "bootsetup: End creating shellhub env file"
 
 rm $SHELLHUB_FILE
 
