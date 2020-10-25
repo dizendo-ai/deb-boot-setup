@@ -19,36 +19,50 @@ if [ ! -f "$SHELLHUB_TENANT_ID" ]; then
 	echo "bootsetup: Missing file $SHELLHUB_TENANT_ID"
     exit 0
 else
-    shellhub_tenant_id="$(cat $SHELLHUB_TENANT_ID)"
+    SHELLHUB_TENANT_ID="$(cat $SHELLHUB_TENANT_ID)"
 fi
 
 # Check if server address config file exists
 if [ ! -f "$SHELLHUB_SERVER_ADDRESS" ]; then
-    shellhub_server_address="https://cloud.shellhub.io"
+    SHELLHUB_SERVER_ADDRESS="https://cloud.shellhub.io"
 else
-    shellhub_server_address="$(cat $SHELLHUB_SERVER_ADDRESS)"
+    SHELLHUB_SERVER_ADDRESS="$(cat $SHELLHUB_SERVER_ADDRESS)"
 fi
 
 # Check if version config file exists
 if [ ! -f "$SHELLHUB_VERSION" ]; then
-    shellhub_version="v0.4.2"
+    SHELLHUB_VERSION="v0.4.2"
 else
-    shellhub_version="$(cat $SHELLHUB_VERSION)"
+    SHELLHUB_VERSION="$(cat $SHELLHUB_VERSION)"
 fi
+
+# Defaults
+SHELLHUB_PREFERRED_HOSTNAME=$HOSTNAME
+SHELLHUB_PRIVATE_KEY=/host/etc/shellhub.key
 
 # Create app directory
 mkdir -p /opt/shellhub
 
 # Create app start script
+echo "bootsetup: Start creating shellhub start script"
+cat > /opt/shellhub/start.sh <<EOF
+#!/usr/bin/env bash
+
+/usr/bin/docker run --rm --name=shellhub --privileged --net=host --pid=host -v /:/host -v /dev:/dev -v /var/run/docker.sock:/var/run/docker.sock -v /etc/passwd:/etc/passwd -v /etc/group:/etc/group -e SHELLHUB_SERVER_ADDRESS=$SHELLHUB_SERVER_ADDRESS -e SHELLHUB_PRIVATE_KEY=$SHELLHUB_PRIVATE_KEY -e SHELLHUB_TENANT_ID=$SHELLHUB_TENANT_ID -e SHELLHUB_PREFERRED_HOSTNAME=$HOSTNAME shellhubio/agent:$SHELLHUB_VERSION
+EOF
+echo "bootsetup: End creating shellhub start script"
+
+# Create app env file
 echo "bootsetup: Start creating shellhub env file"
 cat > /opt/shellhub/.env <<EOF
-SHELLHUB_TENANT_ID=$shellhub_tenant_id
-SHELLHUB_SERVER_ADDRESS=$shellhub_server_address
-SHELLHUB_VERSION=$shellhub_version
-SHELLHUB_PREFERRED_HOSTNAME=$HOSTNAME
-SHELLHUB_PRIVATE_KEY=/host/etc/shellhub.key
+SHELLHUB_TENANT_ID=$SHELLHUB_TENANT_ID
+SHELLHUB_SERVER_ADDRESS=$SHELLHUB_SERVER_ADDRESS
+SHELLHUB_VERSION=$SHELLHUB_VERSION
+SHELLHUB_PREFERRED_HOSTNAME=$SHELLHUB_PREFERRED_HOSTNAME
+SHELLHUB_PRIVATE_KEY=$SHELLHUB_PRIVATE_KEY
 EOF
 echo "bootsetup: End creating shellhub env file"
 
+chmod ugo+x /opt/shellhub/start.sh
 rm $SHELLHUB_FILE
 
