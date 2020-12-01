@@ -17,7 +17,7 @@ else
 fi
 
 # Wait devices come online
-# sleep 10
+sleep 10
 
 # Check if can access google.com
 echo "bootsetup: Begin test connection to https://google.com..."
