@@ -17,11 +17,11 @@ else
 fi
 
 # Wait devices come online
-sleep 10
+sleep 15
 
 # Check if can access google.com
 echo "bootsetup: Begin test connection to https://google.com..."
-if ping -c 3 8.8.8.8 > /dev/null; then
+if ping -c 5 8.8.8.8 > /dev/null; then
 	echo "bootsetup: Have internet connection"
 else
 	echo "bootsetup: Start WIFI connection setup"
