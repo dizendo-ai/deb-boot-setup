@@ -31,7 +31,7 @@ fi
 
 # Check if version config file exists
 if [ ! -f "$SHELLHUB_VERSION" ]; then
-    SHELLHUB_VERSION="v0.4.2"
+    SHELLHUB_VERSION="v0.6.3"
 else
     SHELLHUB_VERSION="$(cat $SHELLHUB_VERSION)"
 fi
